@@ -1,0 +1,3 @@
+{{- if .Values.host -}}
+See: http://{{ .Values.host }}
+{{- end -}}

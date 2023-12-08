@@ -1,0 +1,39 @@
+# Required
+image:
+host:
+
+# Optional
+path: /
+pathType: Prefix
+clusterIssuer: letsencrypt
+containerPort: 80
+wwwRedirect: false
+changeCause: null
+replicas: 1
+tls: true
+dockerRegistry: null
+dockerRegistryAuth: null
+restartAfterRedeploy: false
+CI_PROJECT_PATH_SLUG:
+CI_ENVIRONMENT_SLUG:
+containerEnv: {}
+# containerEnv:
+#   FOO: hello
+#   BAR: world
+basicAuth:
+  username: null
+  password: null
+ingressExtraAnnotations: {}
+# ingressExtraAnnotations:
+#   name: value
+#   foo: bar
+args: null
+# args: ["slu", "example-server"]
+tlsKeyBase64: null
+tlsCrtBase64: null
+hostAliases: []
+# hostAliases:
+#   - ip: "127.0.0.1"
+#     hostnames:
+#     - "foo.local"
+#     - "bar.local"

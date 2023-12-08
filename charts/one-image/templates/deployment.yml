@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  annotations:
+    xxx: xxx
+  {{ if .Values.changeCause }}
+    kubernetes.io/change-cause: {{ .Values.changeCause }}
+  {{ end }}
+  {{ if .Values.CI_PROJECT_PATH_SLUG }}
+    app.gitlab.com/app: {{ .Values.CI_PROJECT_PATH_SLUG }}
+  {{ end }}
+  {{ if .Values.CI_ENVIRONMENT_SLUG }}
+    app.gitlab.com/env: {{ .Values.CI_ENVIRONMENT_SLUG }}
+  {{ end }}
+  labels:
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        xxx: xxx
+      {{ if .Values.CI_PROJECT_PATH_SLUG }}
+        app.gitlab.com/app: {{ .Values.CI_PROJECT_PATH_SLUG }}
+      {{ end }}
+      {{ if .Values.CI_ENVIRONMENT_SLUG }}
+        app.gitlab.com/env: {{ .Values.CI_ENVIRONMENT_SLUG }}
+      {{ end }}
+      {{ if .Values.restartAfterRedeploy }}
+        rollme: {{ randAlphaNum 5 | quote }}
+      {{ end }}
+      labels:
+        release: {{ .Release.Name }}
+    spec:
+      {{- if and (.Values.dockerRegistry) (.Values.dockerRegistryAuth) }}
+      imagePullSecrets:
+        - name: {{ .Release.Name }}-docker
+      {{ end }}
+      hostAliases: {{ .Values.hostAliases | toJson }}
+      containers:
+        - name: main
+          image: {{ required ".Values.image is required" .Values.image }}
+          imagePullPolicy: Always
+          {{- if .Values.args }}
+          args: {{ .Values.args | toJson }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.containerPort }}
+              protocol: TCP
+        {{ if .Values.containerEnv }}
+          env:
+            {{- range $env := .Values.containerEnv }}
+            - name: {{ $env.name }}
+              value: {{ $env.value | quote }}
+            {{- end }}
+        {{ end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+              httpHeaders:
+              - name: Host
+                value: {{ .Values.host }}

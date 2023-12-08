@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Hello World example chart
+name: hello-world
+version: 0.9.0-dev

@@ -1,0 +1,13 @@
+# Optional
+image: sikalabs/hello-world-server
+replicas: 1
+host: null
+clusterIssuer: letsencrypt
+TEXT:
+# ingressExtraAnnotations:
+#   name: value
+#   foo: bar
+ingressClassName: nginx
+ingressExtraAnnotations: {}
+tlsKeyBase64: null
+tlsCrtBase64: null
